@@ -1,0 +1,76 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isManager() {
+      return isAuthenticated() && (
+        getUserData().role == 'Manager' || 
+        (request.auth.token.email == "phandinhtinqlr@gmail.com" && request.auth.token.email_verified == true)
+      );
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (isOwner(userId) || isManager());
+      allow create, update: if isManager();
+      allow delete: if isManager();
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isAuthenticated();
+      allow create: if isManager();
+      allow update: if isAuthenticated() && (
+        isManager() || 
+        (resource.data.assigneeId == request.auth.uid) ||
+        (request.auth.uid in resource.data.collaborators)
+      );
+      allow delete: if isManager();
+    }
+
+    match /workLogs/{logId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (isManager() || resource.data.userId == request.auth.uid);
+      allow delete: if isManager();
+    }
+
+    match /activityLogs/{logId} {
+      allow read: if isManager();
+      allow create: if isAuthenticated();
+      allow update, delete: if false;
+    }
+
+    match /notifications/{notifId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+
+    match /config/{configId} {
+      allow read: if isAuthenticated();
+      allow write: if isManager();
+    }
+  }
+}

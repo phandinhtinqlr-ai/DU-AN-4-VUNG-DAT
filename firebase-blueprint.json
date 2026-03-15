@@ -1,0 +1,117 @@
+{
+  "entities": {
+    "users": {
+      "title": "User",
+      "description": "System users and their roles",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["Manager", "Editor"] },
+        "status": { "type": "string", "enum": ["Active", "Locked"] },
+        "department": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "status"]
+    },
+    "tasks": {
+      "title": "Task",
+      "description": "Project tasks for 4 lands of Ba Na Hills",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "code": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "project": { "type": "string" },
+        "land": { "type": "string" },
+        "category": { "type": "string" },
+        "department": { "type": "string" },
+        "assigneeId": { "type": "string" },
+        "collaborators": { "type": "array", "items": { "type": "string" } },
+        "week": { "type": "integer" },
+        "startDate": { "type": "string", "format": "date" },
+        "dueDate": { "type": "string", "format": "date" },
+        "status": { "type": "string" },
+        "progress": { "type": "integer" },
+        "priority": { "type": "string" },
+        "riskLevel": { "type": "string" },
+        "result": { "type": "string" },
+        "notes": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["code", "title", "land", "department", "assigneeId", "status"]
+    },
+    "workLogs": {
+      "title": "Work Log",
+      "description": "Daily work logs for tasks",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "taskId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "userId": { "type": "string" },
+        "content": { "type": "string" },
+        "volume": { "type": "string" },
+        "result": { "type": "string" },
+        "difficulties": { "type": "string" },
+        "suggestions": { "type": "string" },
+        "images": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["taskId", "date", "userId", "content"]
+    },
+    "activityLogs": {
+      "title": "Activity Log",
+      "description": "System-wide activity audit trail",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "action": { "type": "string" },
+        "module": { "type": "string" },
+        "taskId": { "type": "string" },
+        "beforeData": { "type": "object" },
+        "afterData": { "type": "object" }
+      }
+    },
+    "notifications": {
+      "title": "Notification",
+      "description": "User notifications",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string" },
+        "taskId": { "type": "string" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "systemConfig": {
+      "title": "System Configuration",
+      "description": "Global settings and categories",
+      "type": "object",
+      "properties": {
+        "departments": { "type": "array", "items": { "type": "string" } },
+        "categories": { "type": "array", "items": { "type": "string" } },
+        "lands": { "type": "array", "items": { "type": "string" } },
+        "taskStatuses": { "type": "array", "items": { "type": "string" } },
+        "priorities": { "type": "array", "items": { "type": "string" } },
+        "riskLevels": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "firestore": {
+    "users": { "schema": "users", "description": "User profiles" },
+    "tasks": { "schema": "tasks", "description": "Project tasks" },
+    "workLogs": { "schema": "workLogs", "description": "Daily work logs" },
+    "activityLogs": { "schema": "activityLogs", "description": "System activity logs" },
+    "notifications": { "schema": "notifications", "description": "User notifications" },
+    "config": { "schema": "systemConfig", "description": "Global configuration" }
+  }
+}

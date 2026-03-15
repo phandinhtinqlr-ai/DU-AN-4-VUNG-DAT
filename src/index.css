@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bana-gold: #D4AF37;
+  --color-bana-blue: #1E3A8A;
+  --color-bana-dark: #0F172A;
+  --color-bana-accent: #F59E0B;
+  
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+}
+
+.glass-card {
+  @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+}
+
+.bana-gradient {
+  @apply bg-gradient-to-br from-bana-blue to-bana-dark;
+}
+
